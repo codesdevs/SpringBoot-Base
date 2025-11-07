@@ -1,6 +1,8 @@
 package com.liyuxiang.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.liyuxiang.config.properties.SecurityProperties;
+import com.liyuxiang.interceptor.HeaderInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,15 +18,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Description: 通用配置
  */
 @AutoConfiguration
+@RequiredArgsConstructor
 public class ResourcesConfig implements WebMvcConfigurer {
+
+    private final SecurityProperties securityProperties;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
+        // 注册自定义请求头拦截器
+        registry.addInterceptor(headerInterceptor())
+                .addPathPatterns("/**")
+                // 排除白名单路径，不进行拦截
+                .excludePathPatterns(securityProperties.getWhites());
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    }
+
+    /**
+     * 请求头拦截器
+     */
+    @Bean
+    public HeaderInterceptor headerInterceptor() {
+        return new HeaderInterceptor();
     }
 
     /**

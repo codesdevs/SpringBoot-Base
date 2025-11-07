@@ -1,17 +1,17 @@
 package com.liyuxiang.config;
 
 import com.liyuxiang.config.properties.SecurityProperties;
+import com.liyuxiang.config.security.AccessDeniedHandlerImpl;
+import com.liyuxiang.config.security.AuthenticationEntryPointImpl;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
@@ -26,6 +26,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final SecurityProperties securityProperties;
+    private final AuthenticationEntryPointImpl authenticationEntryPoint;
+    private final AccessDeniedHandlerImpl accessDeniedHandler;
 
     @PostConstruct
     public void init() {
@@ -34,11 +36,30 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // 配置安全规则，使用忽略的路径
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(securityProperties.getWhites().toArray(new String[0])).permitAll()
-                .anyRequest().authenticated()
-        );
+        http
+                // 禁用 CSRF 保护
+                .csrf(csrf -> csrf.disable())
+                // 配置 Session 管理策略为无状态
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // 禁用表单登录
+                .formLogin(form -> form.disable())
+                // 禁用 HTTP Basic 认证
+                .httpBasic(basic -> basic.disable())
+                // 配置异常处理
+                .exceptionHandling(exception -> exception
+                        // 认证失败处理器（401 未认证）
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        // 权限拒绝处理器（403 权限不足）
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+                // 配置路径权限规则
+                .authorizeHttpRequests(auth -> auth
+                        // 白名单路径允许匿名访问
+                        .requestMatchers(securityProperties.getWhites().toArray(new String[0])).permitAll()
+                        // 其他所有请求允许访问（由拦截器进行认证控制）
+                        .anyRequest().permitAll()
+                );
 
         return http.build();
     }

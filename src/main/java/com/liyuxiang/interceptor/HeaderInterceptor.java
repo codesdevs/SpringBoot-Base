@@ -30,7 +30,26 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
             return true;
         }
 
-        // 获取用户信息
+        // 获取用户信息（从请求头中提取）
+        String userId = request.getHeader(SecurityConstants.DETAILS_USER_ID);
+        String username = request.getHeader(SecurityConstants.DETAILS_USERNAME);
+        String userKey = request.getHeader(SecurityConstants.USER_KEY);
+
+        // 如果请求头中存在用户信息，则存储到上下文中
+        if (userId != null && !userId.isEmpty()) {
+            SecurityContextHolder.setUserId(userId);
+            log.debug("设置用户ID到上下文：{}", userId);
+        }
+
+        if (username != null && !username.isEmpty()) {
+            SecurityContextHolder.setUserName(username);
+            log.debug("设置用户名到上下文：{}", username);
+        }
+
+        if (userKey != null && !userKey.isEmpty()) {
+            SecurityContextHolder.setUserKey(userKey);
+            log.debug("设置用户Key到上下文：{}", userKey);
+        }
 
         return true;
     }
