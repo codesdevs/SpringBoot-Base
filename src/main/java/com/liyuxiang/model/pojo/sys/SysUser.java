@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.time.LocalDateTime;
+
 /**
  * @Author: liyuxiang
  * @Date: 2025/10/1 13:29
@@ -39,9 +41,7 @@ public class SysUser extends BaseEntity {
 
     private Integer status;
 
-    private String delFlag;
-
     private String loginIp;
 
-    private String loginDate;
+    private LocalDateTime loginDate;
 }

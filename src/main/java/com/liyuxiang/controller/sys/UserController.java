@@ -2,6 +2,7 @@ package com.liyuxiang.controller.sys;
 
 import com.liyuxiang.common.result.ResponseResult;
 import com.liyuxiang.model.dto.LoginDTO;
+import com.liyuxiang.model.dto.RegisterDTO;
 import com.liyuxiang.service.UserService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,13 +27,12 @@ public class UserController {
     @PostMapping("login")
     public ResponseResult<String> login(@RequestBody @Validated LoginDTO loginDTO) {
         String token = userService.login(loginDTO);
-        return ResponseResult.success("token");
+        return ResponseResult.success(token);
     }
 
-
-    @PostMapping("logins")
-    public ResponseResult<String> logins(@RequestBody @Validated LoginDTO loginDTO) {
-        String token = userService.login(loginDTO);
-        return ResponseResult.success("token");
+    @PostMapping("register")
+    public ResponseResult<String> register(@RequestBody @Validated RegisterDTO registerDTO) {
+        userService.register(registerDTO);
+        return ResponseResult.success();
     }
 }

@@ -2,12 +2,14 @@ package com.liyuxiang.model.pojo;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @Author: liyuxiang
@@ -15,12 +17,14 @@ import java.util.Date;
  * @Description: 数据库基础实体类
  */
 @Data
+@MappedSuperclass
 public class BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     @JsonIgnore
+    @Transient
     @TableField(exist = false)
     private String searchValue;
 
@@ -29,10 +33,13 @@ public class BaseEntity implements Serializable {
     private String updateBy;
 
     @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     private String remark;
+
+    @TableLogic(value = "0", delval = "1")
+    private String delFlag = "0";
 }
