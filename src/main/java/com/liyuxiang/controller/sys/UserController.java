@@ -17,13 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/sys/user")
 public class UserController {
-    private UserService userService;
-    public UserController(UserService userService){
+    private final UserService userService;
+
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @PostMapping("login")
     public ResponseResult<String> login(@RequestBody @Validated LoginDTO loginDTO) {
+        String token = userService.login(loginDTO);
+        return ResponseResult.success("token");
+    }
+
+
+    @PostMapping("logins")
+    public ResponseResult<String> logins(@RequestBody @Validated LoginDTO loginDTO) {
         String token = userService.login(loginDTO);
         return ResponseResult.success("token");
     }

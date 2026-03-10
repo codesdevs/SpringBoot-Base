@@ -3,6 +3,8 @@ package com.liyuxiang.model.security;
 import com.liyuxiang.model.pojo.sys.SysUser;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -11,7 +13,8 @@ import java.util.Set;
  * @Description: 登录用户身份权限
  */
 @Data
-public class LoginUser  {
+public class LoginUser implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**
