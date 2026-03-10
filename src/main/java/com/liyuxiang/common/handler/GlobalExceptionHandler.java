@@ -1,13 +1,15 @@
 package com.liyuxiang.common.handler;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.liyuxiang.common.enums.ResultCodeEnum;
 import com.liyuxiang.common.exception.BusinessException;
 import com.liyuxiang.common.result.ResponseResult;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Objects;
 
@@ -16,7 +18,7 @@ import java.util.Objects;
  * @Date: 2025/9/22 15:53
  * @Description: 全局异常处理
  */
-@ControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
@@ -49,5 +51,16 @@ public class GlobalExceptionHandler {
         return ResponseResult.fail(ResultCodeEnum.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NotLoginException.class)
+    public Object handleNotLoginException(NotLoginException e) {
+        log.error("handleNotLoginException：{}", e.getMessage());
+        return ResponseResult.fail(ResultCodeEnum.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public Object handleNoResourceFoundException(NoResourceFoundException e) {
+        log.error("handleNoResourceFoundException：{}", e.getMessage());
+        return ResponseResult.fail(ResultCodeEnum.NOT_FOUND);
+    }
 
 }

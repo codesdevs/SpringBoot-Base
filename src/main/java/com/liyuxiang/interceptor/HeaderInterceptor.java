@@ -1,7 +1,10 @@
 package com.liyuxiang.interceptor;
 
+import cn.dev33.satoken.session.SaSession;
+import cn.dev33.satoken.stp.StpUtil;
 import com.liyuxiang.common.constant.SecurityConstants;
 import com.liyuxiang.common.context.SecurityContextHolder;
+import com.liyuxiang.model.security.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,27 +33,18 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
             return true;
         }
 
-        // 获取用户信息（从请求头中提取）
-        String userId = request.getHeader(SecurityConstants.DETAILS_USER_ID);
-        String username = request.getHeader(SecurityConstants.DETAILS_USERNAME);
-        String userKey = request.getHeader(SecurityConstants.USER_KEY);
-
-        // 如果请求头中存在用户信息，则存储到上下文中
-        if (userId != null && !userId.isEmpty()) {
-            SecurityContextHolder.setUserId(userId);
-            log.debug("设置用户ID到上下文：{}", userId);
+        // 直接从 TokenSession 获取用户信息（不重复校验登录）
+        if (StpUtil.isLogin()) {
+            SaSession tokenSession = StpUtil.getTokenSession();
+            if (tokenSession != null) {
+                LoginUser loginUser = tokenSession.getModel(SecurityConstants.LOGIN_USER, LoginUser.class);
+                if (loginUser != null) {
+                    SecurityContextHolder.setUserId(String.valueOf(loginUser.getUserId()));
+                    SecurityContextHolder.setUserName(loginUser.getUser().getUserName());
+                    SecurityContextHolder.set(SecurityConstants.LOGIN_USER, loginUser);
+                }
+            }
         }
-
-        if (username != null && !username.isEmpty()) {
-            SecurityContextHolder.setUserName(username);
-            log.debug("设置用户名到上下文：{}", username);
-        }
-
-        if (userKey != null && !userKey.isEmpty()) {
-            SecurityContextHolder.setUserKey(userKey);
-            log.debug("设置用户Key到上下文：{}", userKey);
-        }
-
         return true;
     }
 

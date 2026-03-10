@@ -50,6 +50,7 @@ public enum ResultCodeEnum {
     AUTH_TOKEN_EXPIRED(4102, "认证令牌已过期"),
     AUTH_LOGIN_FAILED(4103, "登录失败，用户名或密码错误"),
     AUTH_LOGOUT_SUCCESS(4104, "退出登录成功"),
+    AUTH_CAPTCHA_INVALID(4105, "验证码已过期或不存在"),
     // gateway 4200-4299
     GATEWAY_SERVICE_UNAVAILABLE(4201, "网关服务不可用"),
     GATEWAY_REQUEST_TIMEOUT(4202, "网关请求超时"),
