@@ -35,14 +35,11 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
 
         // 直接从 TokenSession 获取用户信息（不重复校验登录）
         if (StpUtil.isLogin()) {
-            SaSession tokenSession = StpUtil.getTokenSession();
-            if (tokenSession != null) {
-                LoginUser loginUser = tokenSession.getModel(SecurityConstants.LOGIN_USER, LoginUser.class);
-                if (loginUser != null) {
-                    SecurityContextHolder.setUserId(String.valueOf(loginUser.getUserId()));
-                    SecurityContextHolder.setUserName(loginUser.getUserName());
-                    SecurityContextHolder.set(SecurityConstants.LOGIN_USER, loginUser);
-                }
+            LoginUser loginUser = (LoginUser) StpUtil.getTokenSession().get(SecurityConstants.LOGIN_USER);
+            if (loginUser != null) {
+                SecurityContextHolder.setUserId(String.valueOf(loginUser.getUserId()));
+                SecurityContextHolder.setUserName(loginUser.getUserName());
+                SecurityContextHolder.set(SecurityConstants.LOGIN_USER, loginUser);
             }
         }
         return true;

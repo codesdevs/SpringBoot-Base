@@ -81,7 +81,7 @@ public class RedisConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        RedisSerializer<Object> serializer = new GenericJackson2JsonRedisSerializer();
+        RedisSerializer<Object> serializer = new FastJson2JsonRedisSerializer<>();
 
         redisTemplate.setKeySerializer(RedisSerializer.string()); // key序列化
         redisTemplate.setValueSerializer(serializer); // value序列化
