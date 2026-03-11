@@ -1,14 +1,16 @@
 package com.liyuxiang.controller.sys;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.liyuxiang.common.result.ResponseResult;
 import com.liyuxiang.model.dto.LoginDTO;
 import com.liyuxiang.model.dto.RegisterDTO;
+import com.liyuxiang.model.security.LoginUser;
+import com.liyuxiang.model.vo.UserInfoVo;
 import com.liyuxiang.service.UserService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 /**
  * @Author: liyuxiang
@@ -34,5 +36,12 @@ public class UserController {
     public ResponseResult<String> register(@RequestBody @Validated RegisterDTO registerDTO) {
         userService.register(registerDTO);
         return ResponseResult.success();
+    }
+
+    @SaCheckLogin
+    @GetMapping("/info")
+    public ResponseResult<UserInfoVo> getUserInfo() {
+        UserInfoVo userInfo =  userService.getUserInfo();
+        return ResponseResult.success(userInfo);
     }
 }

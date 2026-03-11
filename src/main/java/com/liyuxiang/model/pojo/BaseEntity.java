@@ -28,9 +28,9 @@ public class BaseEntity implements Serializable {
     @TableField(exist = false)
     private String searchValue;
 
-    private String createBy;
+    private Long createBy;
 
-    private String updateBy;
+    private Long updateBy;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

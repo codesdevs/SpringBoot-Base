@@ -1,10 +1,14 @@
 package com.liyuxiang.model.security;
 
+import com.alibaba.fastjson2.annotation.JSONField;
+import com.liyuxiang.model.dto.RoleDTO;
 import com.liyuxiang.model.pojo.sys.SysUser;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,6 +22,11 @@ public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 租户ID
+     */
+    private String tenantId;
+
+    /**
      * 用户ID
      */
     private Long userId;
@@ -28,9 +37,19 @@ public class LoginUser implements Serializable {
     private Long deptId;
 
     /**
+     * 部门名
+     */
+    private String deptName;
+
+    /**
      * 用户唯一标识
      */
     private String token;
+
+    /**
+     * 用户类型
+     */
+    private String userType;
 
     /**
      * 登录时间
@@ -63,27 +82,60 @@ public class LoginUser implements Serializable {
     private String os;
 
     /**
-     * 权限列表
+     * 菜单权限
      */
-    private Set<String> permissions;
+    private Set<String> menuPermission;
 
     /**
-     * 用户信息
+     * 角色权限
      */
-    private SysUser user;
+    private Set<String> rolePermission;
 
-    public LoginUser() {
-    }
+    /**
+     * 用户名
+     */
+    private String userName;
 
-    public LoginUser(SysUser user, Set<String> permissions) {
-        this.user = user;
-        this.permissions = permissions;
-    }
+    /**
+     * 用户名
+     */
+    private String nickName;
 
-    public LoginUser(Long userId, Long deptId, SysUser user, Set<String> permissions) {
-        this.userId = userId;
-        this.deptId = deptId;
-        this.user = user;
-        this.permissions = permissions;
+    /**
+     * 微信头像
+     */
+    private String avatar;
+
+    /**
+     * 角色对象
+     */
+    private List<RoleDTO> roles;
+
+    /**
+     * 数据权限 当前角色ID
+     */
+    private Long roleId;
+
+    /**
+     * 关联角色类型
+     */
+    private String kroleGroupType;
+
+    /**
+     * 关联角色id
+     */
+    private String kroleGroupIds;
+
+    /**
+     * 获取登录id
+     */
+    public String getLoginId() {
+//        if (userType == null) {
+//            throw new IllegalArgumentException("用户类型不能为空");
+//        }
+        if (userId == null) {
+            throw new IllegalArgumentException("用户ID不能为空");
+        }
+        return userId.toString();
     }
 }
