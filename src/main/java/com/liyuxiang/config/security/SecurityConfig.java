@@ -3,12 +3,14 @@ package com.liyuxiang.config.security;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
+import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
 import com.liyuxiang.common.constant.SecurityConstants;
 import com.liyuxiang.common.handler.AllUrlHandler;
 import com.liyuxiang.common.utils.SpringUtils;
 import com.liyuxiang.config.properties.SecurityProperties;
 import com.liyuxiang.interceptor.HeaderInterceptor;
+import com.liyuxiang.model.security.SaPermissionImpl;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +84,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // Sa-Token权限管理实现类
+    @Bean
+    public StpInterface stpInterface() {
+        return new SaPermissionImpl();
     }
 }

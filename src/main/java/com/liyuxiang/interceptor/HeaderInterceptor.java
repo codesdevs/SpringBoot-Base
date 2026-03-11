@@ -40,7 +40,7 @@ public class HeaderInterceptor implements AsyncHandlerInterceptor {
                 LoginUser loginUser = tokenSession.getModel(SecurityConstants.LOGIN_USER, LoginUser.class);
                 if (loginUser != null) {
                     SecurityContextHolder.setUserId(String.valueOf(loginUser.getUserId()));
-                    SecurityContextHolder.setUserName(loginUser.getUser().getUserName());
+                    SecurityContextHolder.setUserName(loginUser.getUserName());
                     SecurityContextHolder.set(SecurityConstants.LOGIN_USER, loginUser);
                 }
             }

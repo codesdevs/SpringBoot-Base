@@ -2,6 +2,7 @@ package com.liyuxiang.common.utils;
 
 import com.liyuxiang.common.constant.SecurityConstants;
 import com.liyuxiang.common.constant.TokenConstants;
+import com.liyuxiang.common.constant.UserConstants;
 import com.liyuxiang.common.context.SecurityContextHolder;
 import com.liyuxiang.model.security.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
@@ -82,9 +83,9 @@ public class SecurityUtils {
      * @param userId 用户ID
      * @return 结果
      */
-    public static boolean isAdmin(Long userId)
+    public static boolean isSuperAdmin(Long userId)
     {
-        return userId != null && 1L == userId;
+        return UserConstants.SUPER_ADMIN_ID.equals(userId);
     }
 
 }

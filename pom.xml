@@ -100,6 +100,12 @@
             <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>1.44.0</version>
         </dependency>
+        <!-- Sa-Token Redis 模块，在线文档：https://sa-token.cc/documents/redis -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-template</artifactId>
+            <version>1.44.0</version>
+        </dependency>
         <!-- Spring Security 加密工具 -->
         <dependency>
             <groupId>org.springframework.security</groupId>

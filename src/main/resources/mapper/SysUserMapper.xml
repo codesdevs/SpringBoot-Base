@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liyuxiang.mapper.SysUserMapper">
+
+    <!-- 多结构嵌套自动映射需带上每个实体的主键id 否则映射会失败 -->
+    <resultMap type="com.liyuxiang.model.vo.SysUserVo" id="SysUserResult">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="email" column="email"/>
+        <result property="avatar" column="avatar"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="password" column="password"/>
+        <result property="sex" column="sex"/>
+        <result property="status" column="status"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="createTime" column="create_time"/>
+        <result property="remark" column="remark"/>
+        <association property="dept" column="dept_id" resultMap="deptResult"/>
+        <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.liyuxiang.model.vo.SysDeptVo">
+        <id property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="status" column="dept_status"/>
+    </resultMap>
+
+    <resultMap id="RoleResult" type="com.liyuxiang.model.vo.SysRoleVo">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="status" column="role_status"/>
+    </resultMap>
+
+    <sql id="selectUserVo">
+        select u.user_id,
+--                u.user_balance,
+--                u.user_grade,
+               u.dept_id,
+               u.user_name,
+               u.nick_name,
+--                u.user_type,
+               u.email,
+               u.avatar,
+--                u.wx_avatar,
+               u.phone_number,
+               u.password,
+--                u.user_plan,
+               u.sex,
+               u.status,
+               u.del_flag,
+               u.login_ip,
+               u.login_date,
+               u.create_by,
+               u.create_time,
+               u.remark,
+--                u.krole_group_type,
+--                u.krole_group_ids,
+               d.dept_id,
+--                d.parent_id,
+--                d.ancestors,
+               d.dept_name,
+--                d.order_num,
+--                d.leader,
+               d.status as dept_status,
+               r.role_id,
+               r.role_name,
+               r.role_key,
+               r.role_sort,
+               r.data_scope,
+               r.status as role_status
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+                 left join sys_user_role sur on u.user_id = sur.user_id
+                 left join sys_role r on r.role_id = sur.role_id
+    </sql>
+
+    <update id="updateXcxUser">
+        update sys_user
+        set nick_name = #{nickName},
+            wx_avatar = #{wxAvatar}
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="selectPageUserList" resultMap="SysUserResult">
+        select u.user_id,
+               u.dept_id,
+               u.nick_name,
+               u.user_name,
+               u.email,
+               u.avatar,
+               u.phone_number,
+               u.sex,
+               u.user_balance,
+               u.user_grade,
+               u.domain_name,
+               u.status,
+               u.del_flag,
+               u.login_ip,
+               u.login_date,
+               u.create_by,
+               u.create_time,
+               u.remark,
+               d.dept_name,
+               d.leader
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectUserList" resultMap="SysUserResult">
+        select u.user_id,
+               u.dept_id,
+               u.nick_name,
+               u.user_name,
+               u.email,
+               u.avatar,
+               u.phone_number,
+               u.sex,
+               u.user_grade,
+               u.user_balance,
+               u.status,
+               u.del_flag,
+               u.login_ip,
+               u.login_date,
+               u.create_by,
+               u.create_time,
+               u.remark,
+               d.dept_name,
+               d.leader
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectAllocatedList" resultMap="SysUserResult">
+        select distinct u.user_id,
+                        u.dept_id,
+                        u.user_name,
+                        u.nick_name,
+                        u.email,
+                        u.phone_number,
+                        u.status,
+                        u.create_time
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+                 left join sys_user_role sur on u.user_id = sur.user_id
+                 left join sys_role r on r.role_id = sur.role_id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectUnallocatedList" resultMap="SysUserResult">
+        select distinct u.user_id,
+                        u.dept_id,
+                        u.user_name,
+                        u.nick_name,
+                        u.email,
+                        u.phone_number,
+                        u.status,
+                        u.create_time
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+                 left join sys_user_role sur on u.user_id = sur.user_id
+                 left join sys_role r on r.role_id = sur.role_id
+            ${ew.getCustomSqlSegment}
+    </select>
+
+    <select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.user_name = #{userName}
+    </select>
+
+    <select id="selectUserByOpenId" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.open_id = #{openId}
+    </select>
+
+    <select id="selectUserByPhoneNumber" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.phone_number = #{phoneNumber}
+    </select>
+
+    <select id="selectUserByEmail" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.email = #{email}
+    </select>
+
+    <select id="selectTenantUserByUserName" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.user_name = #{userName} and u.tenant_id = #{tenantId}
+    </select>
+
+    <select id="selectTenantUserByPhoneNumber" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.phone_number = #{phoneNumber} and u.tenant_id = #{tenantId}
+    </select>
+
+    <select id="selectTenantUserByEmail" parameterType="String" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.email = #{email} and u.tenant_id = #{tenantId}
+    </select>
+
+    <select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+        <include refid="selectUserVo"/>
+        where u.del_flag = '0' and u.user_id = #{userId}
+    </select>
+
+
+</mapper>

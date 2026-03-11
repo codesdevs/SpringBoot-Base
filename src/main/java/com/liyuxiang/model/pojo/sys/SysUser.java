@@ -25,6 +25,8 @@ public class SysUser extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    private Long deptId;
+
     private String userName;
 
     private String password;
@@ -33,7 +35,8 @@ public class SysUser extends BaseEntity {
 
     private String email;
 
-    private String phone;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     private String sex;
 

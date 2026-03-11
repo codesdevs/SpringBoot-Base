@@ -1,6 +1,8 @@
 package com.liyuxiang.common.handler;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
 import com.liyuxiang.common.enums.ResultCodeEnum;
 import com.liyuxiang.common.exception.BusinessException;
 import com.liyuxiang.common.result.ResponseResult;
@@ -61,6 +63,26 @@ public class GlobalExceptionHandler {
     public Object handleNoResourceFoundException(NoResourceFoundException e) {
         log.error("handleNoResourceFoundException：{}", e.getMessage());
         return ResponseResult.fail(ResultCodeEnum.NOT_FOUND);
+    }
+
+    /**
+     * 权限码异常
+     */
+    @ExceptionHandler(NotPermissionException.class)
+    public Object handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}',权限码校验失败'{}'", requestURI, e.getMessage());
+        return ResponseResult.fail(ResultCodeEnum.UNAUTHORIZED, "没有访问权限，请联系管理员授权");
+    }
+
+    /**
+     * 角色权限异常
+     */
+    @ExceptionHandler(NotRoleException.class)
+    public Object handleNotRoleException(NotRoleException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}',角色权限校验失败'{}'", requestURI, e.getMessage());
+        return ResponseResult.fail(ResultCodeEnum.UNAUTHORIZED, "没有访问权限，请联系管理员授权");
     }
 
 }

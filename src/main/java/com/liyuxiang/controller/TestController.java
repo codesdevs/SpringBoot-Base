@@ -1,5 +1,6 @@
 package com.liyuxiang.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.liyuxiang.common.result.ResponseResult;
 import com.liyuxiang.common.utils.RedisUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.time.Duration;
 public class TestController {
 
     @GetMapping("hello")
+    @SaCheckPermission("test:hello")
     public ResponseResult<String> hello() {
         boolean existsObject = RedisUtils.hasKey("test");
         if (!existsObject) {

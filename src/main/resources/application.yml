@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   datasource:
@@ -26,6 +26,7 @@ security:
     whites:
       - /sys/user/login
       - /sys/user/logout
+      - /sys/user/register
       - /captchaImage
       - /favicon.ico
       - /doc.html
@@ -33,20 +34,24 @@ security:
       - /swagger-resources/**
       - /v2/api-docs/**
 sa-token:
-  # token 名称（同时也是 cookie 名称）
-  token-name:
-  # token 有效期（单位：秒） 默认30天，-1 代表永久有效
-  timeout: 2592000
-  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
-  active-timeout: -1
-  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  # token名称 (同时也是cookie名称)
+  token-name: Authorization
+  # token有效期 设为7天 (必定过期) 单位: 秒
+  timeout: 604800
+  # token临时有效期 (指定时间无操作就过期) 单位: 秒
+  active-timeout: 604800
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
   is-concurrent: true
-  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
   is-share: false
-  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
-  token-style: uuid
-  # 是否输出操作日志
-  is-log: true
+  # 是否尝试从header里读取token
+  is-read-header: true
+  # 是否尝试从cookie里读取token
+  is-read-cookie: false
+  # token前缀
+  token-prefix: "Bearer"
+  # jwt秘钥
+  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
 redisson:
   # redis key前缀
   keyPrefix:
@@ -68,3 +73,13 @@ redisson:
     timeout: 3000
     # 发布和订阅连接池大小
     subscriptionConnectionPoolSize: 50
+# 方式1：推荐 - 打印完整 SQL + 参数绑定值（最清晰）
+logging:
+  level:
+    # MyBatis-Plus 核心包，控制 SQL 输出
+    com.baomidou.mybatisplus: DEBUG
+    # 你的 Mapper 接口所在包（替换成你实际的包名，例如 com.liyuxiang.mapper）
+    com.liyuxiang.mapper: DEBUG   # ← 关键！必须把你自己的 mapper 包设为 DEBUG
+
+    # 可选：如果想更详细（看到 ? 参数的真实值）
+    org.apache.ibatis: DEBUG
